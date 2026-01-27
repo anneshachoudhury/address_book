@@ -1,0 +1,57 @@
+/* react-web/src/AddressSearch.css */
+
+/* Container for the address search input and suggestions */
+.address-search-container {
+  position: relative;
+  width: 100%;
+}
+
+/* Input field */
+.address-search-input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 4px;
+  font-size: 14px;
+  border: 2px solid #ccc;
+  background-color: white;
+  transition: all 0.2s ease;
+}
+
+.address-search-input.valid {
+  border: 2px solid #4CAF50;
+  background-color: #f0fff0;
+}
+
+.address-search-input.invalid {
+  border: 2px solid #ccc;
+  background-color: white;
+}
+
+/* Suggestions dropdown */
+.address-suggestions {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background-color: white;
+  border: 1px solid #ddd;
+  border-top: none;
+  border-radius: 0 0 4px 4px;
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 1000;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Individual suggestion item */
+.address-suggestion-item {
+  padding: 12px;
+  cursor: pointer;
+  border-bottom: 1px solid #eee;
+  font-size: 14px;
+  transition: background-color 0.2s;
+}
+
+.address-suggestion-item:hover {
+  background-color: #f8f9fa;
+}

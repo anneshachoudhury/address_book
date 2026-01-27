@@ -1,0 +1,16 @@
+# Ignore everything
+/*
+
+# Allow only backend and react-web
+!backend/
+!react-web/
+
+# Inside allowed folders, ignore node_modules and env
+backend/node_modules/
+backend/.env
+react-web/node_modules/
+react-web/.env
+
+# Ignore everything else that slipped through
+disregard/
+react-native/
