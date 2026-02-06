@@ -13,4 +13,4 @@ react-web/.env
 
 # Ignore everything else that slipped through
 disregard/
-react-native/
+address_app/
