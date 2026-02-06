@@ -6,7 +6,7 @@ import ContactList from "./ContactList";
 import { saveContactsAsXML } from "./xmlUtils";
 import MapAddress from "./MapAddress";
 import "./styles.css";
-import { FaMoon, FaSun, FaDownload, FaUsers, FaPlus } from "react-icons/fa";
+import { FaMoon, FaSun, FaDownload, FaUsers, FaPlus, FaSync } from "react-icons/fa";
 import paul_lichtblau_unsplash from "./assets/dark/paul_lichtblau_unsplash.jpg";
 import rasmus from "./assets/light/rasmus.jpg";
 
@@ -16,6 +16,8 @@ function App() {
   const [activeSection, setActiveSection] = useState("addressBook");
   const [selectedAddress, setSelectedAddress] = useState("");
   const [darkMode, setDarkMode] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   // Preload dark/light mode image
   useEffect(() => {
@@ -24,6 +26,31 @@ function App() {
     const lightImg = new Image();
     lightImg.src = rasmus;
   }, []);
+
+  // Fetch contacts from backend when app loads
+  useEffect(() => {
+    fetchContacts();
+  }, []);
+
+  // Function to fetch contacts from backend
+  const fetchContacts = async () => {
+    setLoading(true);
+    setError("");
+    try {
+      const res = await fetch("http://localhost:5000/contacts");
+      if (!res.ok) {
+        throw new Error(`Failed to fetch contacts: ${res.status} ${res.statusText}`);
+      }
+      const data = await res.json();
+      setContacts(data);
+      console.log("Loaded contacts from backend:", data.length);
+    } catch (err) {
+      console.error("Failed to fetch contacts:", err);
+      setError("Failed to load contacts. Please check if backend is running.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const addContact = async (contact) => {
     try {
@@ -40,8 +67,9 @@ function App() {
       const result = await res.json();
       console.log("Contact saved to MongoDB:", result);
 
-      // Only update local state after successful save
-      setContacts([...contacts, contact]);
+      // Refresh the contact list from backend
+      await fetchContacts();
+      
       setSelectedAddress("");
     } catch (err) {
       console.error("Error saving contact:", err);
@@ -61,6 +89,25 @@ function App() {
 
   const goToAddressBook = () => {
     setActiveSection("addressBook");
+  };
+
+  // Function to delete a contact
+  const deleteContact = async (id) => {
+    try {
+      const res = await fetch(`http://localhost:5000/contacts/${id}`, {
+        method: "DELETE",
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to delete contact");
+      }
+
+      // Refresh the contact list from backend
+      await fetchContacts();
+    } catch (err) {
+      console.error("Error deleting contact:", err);
+      alert("Failed to delete contact. Please try again.");
+    }
   };
 
   return (
@@ -85,14 +132,24 @@ function App() {
                   <h1 className="app-title" style={{ margin: 0 }}>
                     Address Book
                   </h1>
-                  <button 
-                    className="contacts-badge clickable-badge"
-                    onClick={goToSavedContacts}
-                    title="View Saved Contacts"
-                  >
-                    <FaUsers className="badge-icon" />
-                    <span className="badge-count">{contacts.length}</span>
-                  </button>
+                  <div className="badge-with-refresh">
+                    <button 
+                      className="contacts-badge clickable-badge"
+                      onClick={goToSavedContacts}
+                      title="View Saved Contacts"
+                    >
+                      <FaUsers className="badge-icon" />
+                      <span className="badge-count">{contacts.length}</span>
+                    </button>
+                    <button
+                      className="refresh-btn"
+                      onClick={fetchContacts}
+                      title="Refresh Contacts"
+                      disabled={loading}
+                    >
+                      <FaSync className={loading ? "spin" : ""} />
+                    </button>
+                  </div>
                 </div>
                 
                 <div className="header-buttons">
@@ -114,6 +171,23 @@ function App() {
                   </button>
                 </div>
               </div>
+
+              {/* Loading indicator */}
+              {loading && (
+                <div className="loading-indicator">
+                  <FaSync className="spin" /> Loading contacts...
+                </div>
+              )}
+
+              {/* Error message */}
+              {error && (
+                <div className="error-message">
+                  <p>{error}</p>
+                  <button onClick={fetchContacts} className="retry-btn">
+                    Retry
+                  </button>
+                </div>
+              )}
 
               <ContactForm
                 addContact={addContact}
@@ -130,10 +204,18 @@ function App() {
             <div className="saved-contacts-section">
               <div className="saved-contacts-header">
                 <h1 className="app-title" style={{ margin: 0 }}>
-                  Saved Contacts
+                  Saved Contacts ({contacts.length})
                 </h1>
                 
                 <div className="header-buttons">
+                  <button
+                    className="icon-btn"
+                    onClick={fetchContacts}
+                    title="Refresh Contacts"
+                    disabled={loading}
+                  >
+                    <FaSync className={loading ? "spin" : ""} />
+                  </button>
                   {contacts.length > 0 && (
                     <button
                       className="icon-btn"
@@ -153,10 +235,31 @@ function App() {
                 </div>
               </div>
 
-              {contacts.length > 0 ? (
+              {/* Loading indicator */}
+              {loading && (
+                <div className="loading-indicator">
+                  <FaSync className="spin" /> Loading contacts...
+                </div>
+              )}
+
+              {/* Error message */}
+              {error && (
+                <div className="error-message">
+                  <p>{error}</p>
+                  <button onClick={fetchContacts} className="retry-btn">
+                    Retry
+                  </button>
+                </div>
+              )}
+
+              {!loading && !error && contacts.length > 0 ? (
                 <>
                   <div className="contacts-grid-container">
-                    <ContactList contacts={contacts} cardView={true} />
+                    <ContactList 
+                      contacts={contacts} 
+                      cardView={true} 
+                      onDeleteContact={deleteContact}
+                    />
                   </div>
                   {/* Add More button below the cards */}
                   <div className="add-more-container">
@@ -170,7 +273,7 @@ function App() {
                     </button>
                   </div>
                 </>
-              ) : (
+              ) : !loading && !error ? (
                 <div className="empty-state">
                   <p className="no-contacts-message">
                     No contacts saved yet.
@@ -183,7 +286,7 @@ function App() {
                     Add Your First Contact
                   </button>
                 </div>
-              )}
+              ) : null}
             </div>
           )}
         </div>
@@ -196,8 +299,8 @@ function App() {
             setSelectedAddress(addr);
             setActiveTab("contacts");
           }}
-          initialAddress={selectedAddress} // Make sure this is passed
-          key={selectedAddress} // Add this key to force re-render when address changes
+          initialAddress={selectedAddress}
+          key={selectedAddress}
         />
       )}
     </div>
@@ -205,3 +308,4 @@ function App() {
 }
 
 export default App;
+
