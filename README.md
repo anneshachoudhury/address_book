@@ -1,46 +1,37 @@
-This repository is shared as a representative sample of my full-stack development work.
+# **Address Book Manager**
 
-Address Book Application (Mobile)
+A modern, full-stack address book application with contact management, email verification, and interactive maps.
 
-A full-stack address book application built as part of supervised training, focusing on clean API design, mobile–backend integration, and third-party service usage.
+## **Features**
 
-Overview
+- **Contact Management**: Add, view, and delete contacts
+- **Email Verification**: OTP verification via email
+- **Interactive Maps**: Select addresses using external map API
+- **Dual Display Modes**: Card view and table view for contacts
+- **Light/Dark Mode**: Automatic theme switching based on system preferences
+- **CAPTCHA Protection**: Built-in human verification
+- **Responsive Design**: Works on desktop and mobile devices
 
-This project is a mobile-first address management system that allows users to store, view, and manage contact information, with map-based location support. The application is designed to demonstrate end-to-end data flow between a mobile client and a backend service.
+## **Tech Stack**
 
-Tech Stack
+**Frontend:**
+- React.js
+- External Map API
+- CSS3 with modern flexbox/grid
 
-Frontend: React Native
+**Backend:**
+- Node.js
+- Express.js
+- MongoDB
+- Nodemailer 
+## **Screenshots**
 
-Backend: Node.js, Express.js
+### **Light Mode**
+| Add Contact Page | Saved Contacts Page |
+|------------------|---------------------|
+| ![Light Add Contact](screenshots/light-add-contact.png) | ![Light Saved Contacts](screenshots/light-saved-contacts.png) |
 
-Database: MongoDB
-
-APIs & Integrations: Map and geocoding APIs
-
-Tools: Git, Postman
-
-Key Features
-
-CRUD operations for managing address and contact records
-
-REST API integration between mobile client and backend
-
-Location-based address visualization using map services
-
-Input validation and structured request–response handling
-
-What This Project Demonstrates
-
-Building and consuming REST APIs from a mobile application
-
-Structuring backend routes and controllers for CRUD workflows
-
-Handling third-party API integration in a production-style setup
-
-Clear separation between frontend and backend responsibilities
-
-Status
-
-Core functionality implemented and tested as part of training.
-The project is intended as a demonstrable full-stack sample rather than a production deployment.
+### **Dark Mode**
+| Add Contact Page | Saved Contacts Page |
+|------------------|---------------------|
+| ![Dark Add Contact](screenshots/dark-add-contact.png) | ![Dark Saved Contacts](screenshots/dark-saved-contacts.png) |
