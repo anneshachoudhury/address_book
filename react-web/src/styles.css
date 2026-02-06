@@ -315,7 +315,7 @@ button:hover, .action-btn:hover { opacity: 0.85; }
   width: 100%;
   background: #fdfdfd;
   transition: border-color 0.2s;
-  color: black !important;
+  color: black ;
 
 }
 .contact-form input:focus {
