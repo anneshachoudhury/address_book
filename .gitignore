@@ -4,6 +4,8 @@
 # Allow only backend and react-web
 !backend/
 !react-web/
+!README.md
+!screenshots/
 
 # Inside allowed folders, ignore node_modules and env
 backend/node_modules/
